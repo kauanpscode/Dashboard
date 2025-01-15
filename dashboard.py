@@ -8,8 +8,8 @@ import plotly.express as px
 def load_data_from_google_drive():
     import gdown
     # ID do arquivo do Google Drive (parte do link do arquivo, por exemplo "https://drive.google.com/file/d/FILE_ID/view")
-    file_id_1 = "1kDEibhjzW_izI1PJqLgqzCJsabiNw9rx"  # Substitua pelo ID do primeiro arquivo
-    file_id_2 = "1EHZrJuehu5giGxjZmrhmDkC5qiKOovoG"  # Substitua pelo ID do segundo arquivo
+    file_id_1 = "125wPWBplBg40ijz4zi0DRmkC1Ohkrbuf"  # Substitua pelo ID do primeiro arquivo
+    file_id_2 = "1xay9-m851oQ7ZF0_w_JRaKUCZFrEz-Tn"  # Substitua pelo ID do segundo arquivo
 
     # Baixar os arquivos
     gdown.download(f'https://drive.google.com/uc?id={file_id_1}', 'base_3meses.xlsx', quiet=False)
