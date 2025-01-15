@@ -5,25 +5,19 @@ import plotly.express as px
 # Função para carregar e processar os dados, com cache
 @st.cache_data
 
-def load_data_from_google_drive():
-    import gdown
-    # ID do arquivo do Google Drive (parte do link do arquivo, por exemplo "https://drive.google.com/file/d/FILE_ID/view")
-    file_id_1 = "125wPWBplBg40ijz4zi0DRmkC1Ohkrbuf"  # Substitua pelo ID do primeiro arquivo
-    file_id_2 = "1xay9-m851oQ7ZF0_w_JRaKUCZFrEz-Tn"  # Substitua pelo ID do segundo arquivo
+def load_data_from_github():
+    # URLs dos arquivos no formato raw
+    url_base = "https://github.com/kauanpscode/basescorandini/raw/refs/heads/main/base_3meses.xlsx"
+    url_fcr = "https://github.com/kauanpscode/basescorandini/raw/refs/heads/main/fcr.xlsx"
 
-    # Baixar os arquivos
-    gdown.download(f'https://drive.google.com/uc?id={file_id_1}', 'base_3meses.xlsx', quiet=False)
-    gdown.download(f'https://drive.google.com/uc?id={file_id_2}', 'fcr.xlsx', quiet=False)
-
-    # Carregar os dados com pandas
-    df = pd.read_excel('base_3meses.xlsx', sheet_name='Sheet1')
-    df_fcr = pd.read_excel('fcr.xlsx')
-
+    # Carregar o arquivo Excel
+    df = pd.read_excel(url_base, engine='openpyxl')
+    df_fcr = pd.read_excel(url_fcr, engine='openpyxl')
     return df, df_fcr
 
 def load_data():
     
-    df, df_fcr = load_data_from_google_drive()
+    df, df_fcr = load_data_from_github()
 
     # Processamento dos dados
     df_fcr['temacategoriaassunto'] = df_fcr['temacategoriaassunto'].fillna('').str.lower()
@@ -105,11 +99,6 @@ def load_data():
 
     # Criar uma nova coluna para o mês de service_date
     df['mes_service_date'] = df['service_date'].dt.to_period('M')
-
-    # Filtrar os dados onde filtro_fcr é igual a 1
-    df_filtrado = df[df['filtro_fcr'] == 1]
-
-    df_janeiro = df[df['mes_service_date'] == '2025-01']
 
     return df
 
