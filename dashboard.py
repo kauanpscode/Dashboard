@@ -141,9 +141,9 @@ freq_cat.columns = ['Categoria', 'Contagem']
 freq_cat = freq_cat.reset_index(drop=True)
 
 # Contagem dos top 5 Subjects
-freq_cat = df_filtrado['subject'].value_counts().reset_index()
-freq_cat.columns = ['Assunto', 'Contagem']
-freq_cat = freq_cat.reset_index(drop=True)
+freq_sub = df_filtrado['subject'].value_counts().reset_index()
+freq_sub.columns = ['Assunto', 'Contagem']
+freq_sub = freq_sub.reset_index(drop=True)
 
 # Exibir as tabelas no Streamlit
 st.title("Frequência de cada Tema, Categoria e Assunto.")
@@ -152,12 +152,14 @@ st.subheader("Tema")
 st.dataframe(freq_topics, use_container_width=True)
 fig = px.pie(df_filtrado, names='topic', title='Distribuição por Tema')
 st.plotly_chart(fig)
+
 st.subheader("Categoria")
 st.dataframe(freq_cat, use_container_width=True)
 fig = px.pie(df_filtrado, names='category', title='Distribuição por Categoria')
 st.plotly_chart(fig)
+
 st.subheader("Assunto")
-st.dataframe(freq_cat, use_container_width=True)
+st.dataframe(freq_sub, use_container_width=True)
 fig = px.pie(df_filtrado, names='subject', title='Distribuição por Assunto')
 st.plotly_chart(fig)
 
