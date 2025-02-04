@@ -126,8 +126,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Filtrar para o mês desejado (2025-01, por exemplo)
-mes_filtro = '2025-01'
+# Filtrar para o mês desejado (2025-02, por exemplo)
+mes_filtro = '2025-02'
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
 
 # Contagem dos top 5 Topics
