@@ -4,7 +4,6 @@ import plotly.express as px
 
 # Função para carregar e processar os dados, com cache
 @st.cache_data
-
 def load_data_from_github():
     # URLs dos arquivos no formato raw
     url_base = "https://github.com/kauanpscode/basescorandini/raw/refs/heads/main/base_3meses.xlsx"
@@ -16,7 +15,6 @@ def load_data_from_github():
     return df, df_fcr
 
 def load_data():
-
     df, df_fcr = load_data_from_github()
 
     # Processamento dos dados
@@ -94,7 +92,7 @@ def load_data():
         axis=1
     )
 
-        # Garantir que service_date esteja no formato datetime
+    # Garantir que service_date esteja no formato datetime
     df['service_date'] = pd.to_datetime(df['service_date'], errors='coerce')
 
     # Criar uma nova coluna para o mês de service_date
@@ -117,20 +115,18 @@ mes_filtro = '2025-01'
 mes_filtro = '2025-02'
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
 
-def plot_table_chart(title, data, column):
+def plot_table_chart(title, data, column, idx):
     st.subheader(title)
     col1, col2 = st.columns(2)
     with col1:
         st.dataframe(data, use_container_width=True)
     with col2:
         fig = px.pie(df_filtrado, names=column, title=f'Distribuição por {title}')
-        # Adicionar um identificador único para o gráfico
-        st.plotly_chart(fig, use_container_width=True, key=f"{title}_{column}")
-
+        # Adicionando um índice exclusivo à chave para garantir unicidade
+        st.plotly_chart(fig, use_container_width=True, key=f"{title}_{column}_{idx}")
 
 st.title("Análise de Temas, Categorias e Assuntos")
 
-# Contagens e exibição
 # Contagens e exibição
 plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic', 1)
 plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category', 2)
@@ -145,4 +141,3 @@ if 'calculo_fcr' in df.columns:
     plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject', 6)
 else:
     st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
-
