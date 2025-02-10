@@ -117,28 +117,29 @@ mes_filtro = '2025-01'
 mes_filtro = '2025-02'
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
 
-def plot_table_chart(title, data, column):
+def plot_table_chart(title, data, column, chart_id):
     st.subheader(title)
     col1, col2 = st.columns(2)
     with col1:
-        st.dataframe(data, use_container_width=True)
+        st.dataframe(data, use_container_width=True, key=f"{chart_id}_table")
     with col2:
         fig = px.pie(df_filtrado, names=column, title=f'Distribuição por {title}')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key=f"{chart_id}_pie")
 
 st.title("Análise de Temas, Categorias e Assuntos")
 
 # Contagens e exibição
-plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
-plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
-plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
+plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic', 'tema')
+plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category', 'categoria')
+plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject', 'assunto')
 
 # Verificação se a coluna 'calculo_fcr' existe
 if 'calculo_fcr' in df.columns:
     df_nao_fcr = df_filtrado[df_filtrado['calculo_fcr'] == 'Não']
     st.title("Análise de FCR - Fora do FCR")
-    plot_table_chart("Tema", df_nao_fcr['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
-    plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
-    plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
+    plot_table_chart("Tema", df_nao_fcr['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic', 'tema_fcr')
+    plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category', 'categoria_fcr')
+    plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject', 'assunto_fcr')
 else:
     st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
+
