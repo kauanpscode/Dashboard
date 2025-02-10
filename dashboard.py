@@ -102,14 +102,16 @@ def load_data():
 
     return df
 
-# Carregar os dados
-df = load_data()
-
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-local_css("./style.css")
+st.markdown("""
+    <script>
+        var elements = window.parent.document.getElementsByClassName("block-container");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.maxWidth = "85%";
+            elements[i].style.paddingLeft = "1rem";
+            elements[i].style.paddingRight = "1rem";
+        }
+    </script>
+""", unsafe_allow_html=True)
 
 # Filtrar para o mês desejado (2025-02, por exemplo)
 mes_filtro = '2025-02'
