@@ -105,25 +105,11 @@ def load_data():
 # Carregar os dados
 df = load_data()
 
-st.markdown("""
-    <style>
-        /* Modifica a largura do container principal */
-        .block-container {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-        
-        /* Ajusta a largura da página para maximizar o conteúdo */
-        .main .block-container {
-            max-width: 85% !important;
-        }
-        /* Reduz a margem entre os elementos */
-        .css-18e3th9 {
-            padding-left: 0px !important;
-            padding-right: 0px !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css("style.css")
 
 # Filtrar para o mês desejado (2025-01, por exemplo)
 mes_filtro = '2025-01'
