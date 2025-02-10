@@ -5,12 +5,6 @@ import plotly.express as px
 # Função para carregar e processar os dados, com cache
 @st.cache_data
 
-def load_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-load_css("style.css")
-
 def load_data_from_github():
     # URLs dos arquivos no formato raw
     url_base = "https://github.com/kauanpscode/basescorandini/raw/refs/heads/main/base_3meses.xlsx"
