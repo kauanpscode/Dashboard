@@ -1,10 +1,15 @@
-.stApp {
-    background-color: #f0f2f6;
-}
-
-div.stButton > button {
-    background-color: #4CAF50;
-    color: white;
-    font-size: 16px;
-    border-radius: 10px;
-}
+        /* Modifica a largura do container principal */
+        .block-container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        /* Ajusta a largura da página para maximizar o conteúdo */
+        .main .block-container {
+            max-width: 85% !important;
+        }
+        /* Reduz a margem entre os elementos */
+        .css-18e3th9 {
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
