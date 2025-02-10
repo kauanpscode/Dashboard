@@ -16,7 +16,7 @@ def load_data_from_github():
     return df, df_fcr
 
 def load_data():
-    
+
     df, df_fcr = load_data_from_github()
 
     # Processamento dos dados
@@ -102,17 +102,31 @@ def load_data():
 
     return df
 
+# Carregar os dados
+df = load_data()
+
 st.markdown("""
-    <script>
-        var elements = window.parent.document.getElementsByClassName("block-container");
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].style.maxWidth = "85%";
-            elements[i].style.paddingLeft = "1rem";
-            elements[i].style.paddingRight = "1rem";
+    <style>
+        /* Modifica a largura do container principal */
+        .block-container {
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
-    </script>
+        
+        /* Ajusta a largura da página para maximizar o conteúdo */
+        .main .block-container {
+            max-width: 85% !important;
+        }
+        /* Reduz a margem entre os elementos */
+        .css-18e3th9 {
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
+# Filtrar para o mês desejado (2025-01, por exemplo)
+mes_filtro = '2025-01'
 # Filtrar para o mês desejado (2025-02, por exemplo)
 mes_filtro = '2025-02'
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
