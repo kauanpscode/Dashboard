@@ -117,66 +117,28 @@ mes_filtro = '2025-01'
 mes_filtro = '2025-02'
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
 
-# Contagem dos top 5 Topics
-freq_topics = df_filtrado['topic'].value_counts().reset_index()
-freq_topics.columns = ['Tema', 'Contagem']
-freq_topics = freq_topics.reset_index(drop=True)
+def plot_table_chart(title, data, column):
+    st.subheader(title)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.dataframe(data, use_container_width=True)
+    with col2:
+        fig = px.pie(df_filtrado, names=column, title=f'Distribuição por {title}')
+        st.plotly_chart(fig, use_container_width=True)
 
-# Contagem dos top 5 Categories
-freq_cat = df_filtrado['category'].value_counts().reset_index()
-freq_cat.columns = ['Categoria', 'Contagem']
-freq_cat = freq_cat.reset_index(drop=True)
+st.title("Análise de Temas, Categorias e Assuntos")
 
-# Contagem dos top 5 Subjects
-freq_sub = df_filtrado['subject'].value_counts().reset_index()
-freq_sub.columns = ['Assunto', 'Contagem']
-freq_sub = freq_sub.reset_index(drop=True)
+# Contagens e exibição
+plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
+plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
+plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
 
-# Exibir as tabelas no Streamlit
-st.title("Frequência de cada Tema, Categoria e Assunto.")
-
-st.subheader("Tema")
-st.dataframe(freq_topics, use_container_width=True)
-fig = px.pie(df_filtrado, names='topic', title='Distribuição por Tema')
-st.plotly_chart(fig)
-
-st.subheader("Categoria")
-st.dataframe(freq_cat, use_container_width=True)
-fig = px.pie(df_filtrado, names='category', title='Distribuição por Categoria')
-st.plotly_chart(fig)
-
-st.subheader("Assunto")
-st.dataframe(freq_sub, use_container_width=True)
-fig = px.pie(df_filtrado, names='subject', title='Distribuição por Assunto')
-st.plotly_chart(fig)
-
-
-# Filtrar as linhas onde 'calculo_fcr' é 'Não'
-df_nao_fcr = df_filtrado[df_filtrado['calculo_fcr'] == 'Não']
-
-# Contagem de 'topic', 'category' e 'subject' com 'calculo_fcr' igual a 'Não'
-topics_fcr = df_nao_fcr['topic'].value_counts().reset_index()
-topics_fcr.columns = ['Tema', 'Contagem']
-
-categories_fcr = df_nao_fcr['category'].value_counts().reset_index()
-categories_fcr.columns = ['Categoria', 'Contagem']
-
-subjects_fcr = df_nao_fcr['subject'].value_counts().reset_index()
-subjects_fcr.columns = ['Assunto', 'Contagem']
-
-st.title("Frequência de cada Tema, Categoria e Assunto fora do FCR.")
-
-st.subheader("Tema")
-st.dataframe(topics_fcr, use_container_width=True)
-fig = px.pie(df_nao_fcr, names='topic', title='Distribuição por Tema')
-st.plotly_chart(fig)
-
-st.subheader("Categoria")
-st.dataframe(categories_fcr, use_container_width=True)
-fig = px.pie(df_nao_fcr, names='category', title='Distribuição por Categoria')
-st.plotly_chart(fig)
-
-st.subheader("Assunto")
-st.dataframe(subjects_fcr, use_container_width=True)
-fig = px.pie(df_nao_fcr, names='subject', title='Distribuição por Assunto')
-st.plotly_chart(fig)
+# Verificação se a coluna 'calculo_fcr' existe
+if 'calculo_fcr' in df.columns:
+    df_nao_fcr = df_filtrado[df_filtrado['calculo_fcr'] == 'Não']
+    st.title("Análise de FCR - Fora do FCR")
+    plot_table_chart("Tema", df_nao_fcr['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
+    plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
+    plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
+else:
+    st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
