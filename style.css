@@ -1,7 +1,18 @@
-        /* Modifica a largura do container principal */
-        .block-container {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            max-width: 85% !important;
+/* Modifica a largura do container principal */
+.block-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 85% !important;
+}
 
-        }
+h1 {
+    justify-content: center;
+    text-align: center;
+    margin: 5px 0;
+}
+
+span {
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 100px 0;
+}
