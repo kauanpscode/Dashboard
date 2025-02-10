@@ -131,16 +131,18 @@ def plot_table_chart(title, data, column):
 st.title("Análise de Temas, Categorias e Assuntos")
 
 # Contagens e exibição
-plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
-plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
-plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
+# Contagens e exibição
+plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic', 1)
+plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category', 2)
+plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject', 3)
 
 # Verificação se a coluna 'calculo_fcr' existe
 if 'calculo_fcr' in df.columns:
     df_nao_fcr = df_filtrado[df_filtrado['calculo_fcr'] == 'Não']
     st.title("Análise de FCR - Fora do FCR")
-    plot_table_chart("Tema", df_nao_fcr['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
-    plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
-    plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
+    plot_table_chart("Tema", df_nao_fcr['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic', 4)
+    plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category', 5)
+    plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject', 6)
 else:
     st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
+
