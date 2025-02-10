@@ -123,8 +123,10 @@ def plot_table_chart(title, data, column):
     with col1:
         st.dataframe(data, use_container_width=True)
     with col2:
-        fig = px.pie(df_filtrado, names=column, title=f'')
-        st.plotly_chart(fig, use_container_width=True)
+        fig = px.pie(df_filtrado, names=column, title=f'Distribuição por {title}')
+        # Adicionar um identificador único para o gráfico
+        st.plotly_chart(fig, use_container_width=True, key=f"{title}_{column}")
+
 
 st.title("Análise de Temas, Categorias e Assuntos")
 
