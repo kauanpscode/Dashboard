@@ -9,15 +9,17 @@ def load_data_from_github():
     # URLs dos arquivos no formato raw
     url_base = "https://github.com/kauanpscode/basescorandini/raw/refs/heads/main/base_3meses.xlsx"
     url_fcr = "https://github.com/kauanpscode/basescorandini/raw/refs/heads/main/fcr.xlsx"
+    url_seller = "https://github.com/kauanpscode/basescorandini/raw/refs/heads/main/bases_v1.1.1.xlsx"
 
     # Carregar o arquivo Excel
     df = pd.read_excel(url_base, engine='openpyxl')
     df_fcr = pd.read_excel(url_fcr, engine='openpyxl')
-    return df, df_fcr
+    df_seller = pd.read_excel(url_seller, engine='openpyxl', sheet_name="base_seller")
+    
+    return df, df_fcr, df_seller
 
 def load_data():
-    df, df_fcr = load_data_from_github()
-
+    df, df_fcr, df_seller = load_data_from_github()
     # Processamento dos dados
     df_fcr['temacategoriaassunto'] = df_fcr['temacategoriaassunto'].fillna('').str.lower()
     df_fcr = df_fcr.drop_duplicates(subset=['temacategoriaassunto'])
@@ -98,11 +100,15 @@ def load_data():
 
     # Criar uma nova coluna para o mês de service_date
     df['mes_service_date'] = df['service_date'].dt.to_period('M')
+    
+    df_seller['data'] = df_seller['DATA DE TRATAMENTO'].dt.date
+    df_seller['data'] = pd.to_datetime(df_seller['data'], errors='coerce')
+    df_seller['mes_seller'] = df_seller['data'].dt.to_period('M')
 
-    return df
+    return df, df_seller
 
 # Carregar os dados
-df = load_data()
+df, df_seller = load_data()
 
 def load_css(file_name):
     with open(file_name) as f:
@@ -114,6 +120,7 @@ load_css("style.css")
 meses_disponiveis = sorted(df['mes_service_date'].dropna().unique())
 mes_filtro = st.sidebar.selectbox("Selecione o mês", options=meses_disponiveis, format_func=lambda x: str(x), key="mes_filtro")
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
+df_seller_filtrado = df_seller[df_seller['mes_seller'] == mes_filtro]
 
 def plot_table_chart(title, data, column):
     st.subheader(title)
@@ -123,6 +130,21 @@ def plot_table_chart(title, data, column):
     with col2:
         fig = px.pie(df_filtrado, names=column, title=f'')
         st.plotly_chart(fig, use_container_width=True , key=uuid.uuid4())
+        
+
+# Gráfico de Série Temporal: evolução das interações por dia
+st.subheader("Interações por Dia - Buyer")
+df_temporal = df_filtrado.groupby('data').size().reset_index(name='Contagem')
+fig_line = px.line(df_temporal, x='data', y='Contagem', text='Contagem',title="Número de Interações por Dia")
+fig_line.update_traces(textposition='top center')  # Posiciona os rótulos acima das barras
+st.plotly_chart(fig_line, use_container_width=True, key=uuid.uuid4())
+
+st.subheader("Interações por Dia - Seller")
+df_seller_prod = df_seller_filtrado.groupby('data').size().reset_index(name='Contagem')
+fig_line = px.line(df_seller_prod, x='data', y='Contagem', text='Contagem',title="Número de Interações por Dia")
+fig_line.update_traces(textposition='top center')  # Posiciona os rótulos acima das barras
+st.plotly_chart(fig_line, use_container_width=True, key=uuid.uuid4())
+
 
 st.title("Análise de Temas, Categorias e Assuntos")
 
@@ -130,13 +152,6 @@ st.title("Análise de Temas, Categorias e Assuntos")
 plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
 plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
 plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
-
-# Gráfico de Série Temporal: evolução das interações por dia
-st.subheader("Interações por Dia")
-df_temporal = df_filtrado.groupby('data').size().reset_index(name='Contagem')
-fig_line = px.line(df_temporal, x='data', y='Contagem', text='Contagem',title="Número de Interações por Dia")
-fig_line.update_traces(textposition='top center')  # Posiciona os rótulos acima das barras
-st.plotly_chart(fig_line, use_container_width=True, key=uuid.uuid4())
 
 # Análise de FCR: gráfico de barras resumindo os resultados
 if 'calculo_fcr' in df.columns:
@@ -154,3 +169,4 @@ if 'calculo_fcr' in df.columns:
     st.plotly_chart(fig_bar, use_container_width=True, key=uuid.uuid4())
 else:
     st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
+
