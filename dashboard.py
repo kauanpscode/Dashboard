@@ -121,7 +121,7 @@ def plot_table_chart(title, data, column):
         st.dataframe(data, use_container_width=True)
     with col2:
         fig = px.pie(df_filtrado, names=column, title=f'')
-        st.plotly_chart(fig, use_container_width=True, key=title)
+        st.plotly_chart(fig, use_container_width=True)
 
 st.title("Análise de Temas, Categorias e Assuntos")
 
@@ -135,7 +135,7 @@ st.subheader("Interações por Dia")
 df_temporal = df_filtrado.groupby('data').size().reset_index(name='Contagem')
 fig_line = px.line(df_temporal, x='data', y='Contagem', text='Contagem',title="Número de Interações por Dia")
 fig_line.update_traces(textposition='top center')  # Posiciona os rótulos acima das barras
-st.plotly_chart(fig_line, use_container_width=True, key="interacoes")
+st.plotly_chart(fig_line, use_container_width=True)
 
 # Análise de FCR: gráfico de barras resumindo os resultados
 if 'calculo_fcr' in df.columns:
@@ -150,6 +150,6 @@ if 'calculo_fcr' in df.columns:
     df_fcr_counts.columns = ['FCR Status', 'Contagem']
     fig_bar = px.bar(df_fcr_counts, x='FCR Status', y='Contagem', text='Contagem', title="Contagem de FCR")
 
-    st.plotly_chart(fig_bar, use_container_width=True, key="foraDoFcr")
+    st.plotly_chart(fig_bar, use_container_width=True)
 else:
     st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
