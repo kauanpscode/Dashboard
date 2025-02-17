@@ -109,35 +109,44 @@ def load_css(file_name):
 
 load_css("style.css")
 
-# Filtrar para o mês desejado (2025-01, por exemplo)
-mes_filtro = '2025-01'
-# Filtrar para o mês desejado (2025-02, por exemplo)
-mes_filtro = '2025-02'
+# Filtro dinâmico: permite selecionar o mês disponível na barra lateral
+meses_disponiveis = sorted(df['mes_service_date'].dropna().unique())
+mes_filtro = st.sidebar.selectbox("Selecione o mês", options=meses_disponiveis, format_func=lambda x: str(x))
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
 
-def plot_table_chart(title, data, column, idx):
+def plot_table_chart(title, data, column):
     st.subheader(title)
     col1, col2 = st.columns(2)
     with col1:
         st.dataframe(data, use_container_width=True)
     with col2:
-        fig = px.pie(df_filtrado, names=column, title=f'Distribuição por {title}')
-        # Adicionando um índice exclusivo à chave para garantir unicidade
-        st.plotly_chart(fig, use_container_width=True, key=f"{title}_{column}_{idx}")
+        fig = px.pie(df_filtrado, names=column, title=f'')
+        st.plotly_chart(fig, use_container_width=True)
 
 st.title("Análise de Temas, Categorias e Assuntos")
 
-# Contagens e exibição
-plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic', 1)
-plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category', 2)
-plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject', 3)
+# Relatórios existentes
+plot_table_chart("Tema", df_filtrado['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
+plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
+plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
 
-# Verificação se a coluna 'calculo_fcr' existe
+# Gráfico de Série Temporal: evolução das interações por dia
+st.subheader("Interações por Dia")
+df_temporal = df_filtrado.groupby('data').size().reset_index(name='Contagem')
+fig_line = px.line(df_temporal, x='data', y='Contagem', title="Número de Interações por Dia")
+st.plotly_chart(fig_line, use_container_width=True)
+
+# Análise de FCR: gráfico de barras resumindo os resultados
 if 'calculo_fcr' in df.columns:
-    df_nao_fcr = df_filtrado[df_filtrado['calculo_fcr'] == 'Não']
     st.title("Análise de FCR - Fora do FCR")
-    plot_table_chart("Tema", df_nao_fcr['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic', 4)
-    plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category', 5)
-    plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject', 6)
+    df_nao_fcr = df_filtrado[df_filtrado['calculo_fcr'] == 'Não']
+    plot_table_chart("Tema", df_nao_fcr['topic'].value_counts().reset_index().rename(columns={'index': 'Tema', 'topic': 'Contagem'}), 'topic')
+    plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
+    plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
+    
+    st.subheader("Resumo FCR")
+    df_fcr_counts = df_filtrado['calculo_fcr'].value_counts().reset_index().rename(columns={'index': 'Calculo FCR', 'calculo_fcr': 'Contagem'})
+    fig_bar = px.bar(df_fcr_counts, x='Calculo FCR', y='Contagem', text='Contagem', title="Contagem de FCR")
+    st.plotly_chart(fig_bar, use_container_width=True)
 else:
     st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
