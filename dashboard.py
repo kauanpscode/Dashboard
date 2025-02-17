@@ -121,7 +121,7 @@ def plot_table_chart(title, data, column):
         st.dataframe(data, use_container_width=True)
     with col2:
         fig = px.pie(df_filtrado, names=column, title=f'')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key=title)
 
 st.title("Análise de Temas, Categorias e Assuntos")
 
