@@ -131,7 +131,7 @@ plot_table_chart("Categoria", df_filtrado['category'].value_counts().reset_index
 plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
 
 # Gráfico de Série Temporal: evolução das interações por dia
-st.subheader("Interações por Dia")
+st.subheader("Interações por Dia - Buyer")
 df_temporal = df_filtrado.groupby('data').size().reset_index(name='Contagem')
 fig_line = px.line(df_temporal, x='data', y='Contagem', text='Contagem',title="Número de Interações por Dia")
 fig_line.update_traces(textposition='top center')  # Posiciona os rótulos acima das barras
