@@ -133,7 +133,8 @@ plot_table_chart("Assunto", df_filtrado['subject'].value_counts().reset_index().
 # Gráfico de Série Temporal: evolução das interações por dia
 st.subheader("Interações por Dia")
 df_temporal = df_filtrado.groupby('data').size().reset_index(name='Contagem')
-fig_line = px.line(df_temporal, x='data', y='Contagem', title="Número de Interações por Dia")
+fig_line = px.line(df_temporal, x='data', y='Contagem', text='Contagem',title="Número de Interações por Dia")
+fig_line.update_traces(textposition='top center')  # Posiciona os rótulos acima das barras
 st.plotly_chart(fig_line, use_container_width=True)
 
 # Análise de FCR: gráfico de barras resumindo os resultados
@@ -144,9 +145,11 @@ if 'calculo_fcr' in df.columns:
     plot_table_chart("Categoria", df_nao_fcr['category'].value_counts().reset_index().rename(columns={'index': 'Categoria', 'category': 'Contagem'}), 'category')
     plot_table_chart("Assunto", df_nao_fcr['subject'].value_counts().reset_index().rename(columns={'index': 'Assunto', 'subject': 'Contagem'}), 'subject')
     
-    st.subheader("Resumo FCR")
-    df_fcr_counts = df_filtrado['calculo_fcr'].value_counts().reset_index().rename(columns={'index': 'Calculo FCR', 'calculo_fcr': 'Contagem'})
-    fig_bar = px.bar(df_fcr_counts, x='Calculo FCR', y='Contagem', text='Contagem', title="Contagem de FCR")
+    st.subheader("Quantidade geral - Fora do FCR")
+    df_fcr_counts = df_filtrado[df_filtrado['calculo_fcr'] != '']['calculo_fcr'].value_counts().reset_index()
+    df_fcr_counts.columns = ['FCR Status', 'Contagem']
+    fig_bar = px.bar(df_fcr_counts, x='FCR Status', y='Contagem', text='Contagem', title="Contagem de FCR")
+
     st.plotly_chart(fig_bar, use_container_width=True)
 else:
     st.error("Erro: A coluna 'calculo_fcr' não foi encontrada no DataFrame!")
