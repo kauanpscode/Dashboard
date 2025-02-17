@@ -111,7 +111,7 @@ load_css("style.css")
 
 # Filtro dinâmico: permite selecionar o mês disponível na barra lateral
 meses_disponiveis = sorted(df['mes_service_date'].dropna().unique())
-mes_filtro = st.sidebar.selectbox("Selecione o mês", options=meses_disponiveis, format_func=lambda x: str(x), key=f"mes_filtro_{hash(str(meses_disponiveis))}")
+mes_filtro = st.sidebar.selectbox("Selecione o mês", options=meses_disponiveis, format_func=lambda x: str(x), key="mes_filtro")
 df_filtrado = df[df['mes_service_date'] == mes_filtro]
 
 def plot_table_chart(title, data, column):
