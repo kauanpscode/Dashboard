@@ -103,7 +103,7 @@ def load_data():
     
     df_seller['data'] = df_seller['DATA DE TRATAMENTO'].dt.date
     df_seller['data'] = pd.to_datetime(df_seller['data'], errors='coerce')
-    df_seller['mes_seller'] = df_seller['mês']
+    df_seller['mes_seller'] = df_seller['data'].dt.to_period('M')
 
     return df, df_seller
 
