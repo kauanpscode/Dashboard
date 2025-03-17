@@ -36,14 +36,15 @@ def load_data():
     df = pd.merge(df, df_fcr, on='temacategoriaassunto', how='left')
     df['interacoes'] = df['interacoes'].fillna(1)
 
-    df['interacao_buyer'] = df['outcome'].apply(lambda x: 1 if x == "Interação com o buyer" else 0)
+    df['interacao_buyer'] = df['action'].apply(lambda x: 1 if x == "Interação com o buyer" else 0)
 
     df['diferenca_data'] = (df['service_date'] - df['due_date']).dt.days
     df['sla'] = df['diferenca_data'].apply(lambda x: 1 if x < 0 else 0)
     df['data'] = df['service_date'].dt.date
 
     df['filtro_fcr'] = df.apply(
-        lambda row: 1 if row['subtype'] in ['Mensageria', 'Reclamação', 'Mediação'] and row['outcome'] == 'Interação com o buyer' else 0,
+        lambda row: 1 if row['subtype'] in ['Mensageria', 'Reclamação', 'Mediação'] and row['action'] == 'Interação com o buyer' else 0,
+
         axis=1
     )
 
